@@ -1,19 +1,34 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import "./App.css";
+import axios from "axios";
+import Sample from "./Sample";
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      persons: []
+    };
+  }
+  componentDidMount() {
+    axios
+      .get(
+        `https://cors-anywhere.herokuapp.com/http://ufc-data-api.ufc.com/api/v1/us/fighters`
+      )
+      .then(res => {
+        const persons = res.data;
+        // console.log(persons);
+        this.setState({ persons: persons });
+        console.log(this.state.persons);
+      });
+  }
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+      <ul>
+        {this.state.persons.map(x => (
+          <Sample fName={x.first_name} lName={x.last_name} pic={x.thumbnail} />
+        ))}
+      </ul>
     );
   }
 }
